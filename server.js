@@ -1,19 +1,16 @@
 const express = require('express');
 const { Pool } = require('pg');
-const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 // PostgreSQL connection setup
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    user: 'postgres',
+    host: 'localhost',
+    database: 'map_data',
+    password: '1234',
+    port: 5432,
 });
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Route to fetch location data
 app.get('/locations', async (req, res) => {
@@ -26,12 +23,16 @@ app.get('/locations', async (req, res) => {
     }
 });
 
-// Route to serve index.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
 
+const path = require('path');
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
